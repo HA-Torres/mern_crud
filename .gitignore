@@ -1,0 +1,9 @@
+/node_modules
+.idea/
+.idea/modules.xml
+*.iws
+.idea/workspace.xml
+.settings/
+.buildpath
+.project
+logs/
