@@ -89,6 +89,7 @@ In the proyect we not used any template, for understand all parts of the proyect
 ## Authors
 
 * **Hugo Arturo Torres**
+* **Isai Arellano**
 
 ## License
 
