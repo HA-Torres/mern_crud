@@ -8,8 +8,9 @@ class App extends Component{
     constructor(){
         super();
         this.state = {
-          nombre : '',
-              apellido : ''
+            name : '',
+            apellido : '',
+            personas: [],
         };
 
         //se declaran las funciones que utilizaremos
@@ -35,6 +36,8 @@ class App extends Component{
                 M.toast({
                     html: data.msj
                 });
+                this.setState({name: '', apellido:''});
+                this.get_personas();
             })
             .catch(err => console.error(err));
 
@@ -49,6 +52,54 @@ class App extends Component{
         this.setState({
             [name]: value
         });
+    }
+componentDidMount() {
+        this.get_personas();
+}
+
+    get_personas(){
+        fetch('/api/all_data')
+            .then(resp => resp.json())
+            .then(data => {
+                this.setState({personas: data.response});
+            });
+    }
+
+    update_persona(id_persona){
+        fetch('/api/all_data' + id_persona,{
+            method: 'PUT',
+            body: JSON.stringify(this.state),
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(resp => resp.json())
+            .then((data)=>{
+                M.toast({
+                    html: data.msj
+                });
+                this.setState({name: '', apellido:''});
+                this.get_personas();
+            })
+    }
+
+    delete_persona(id_persona){
+        fetch('/api/all_data/' + id_persona,{
+            method: 'DELETE',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(resp => resp.json())
+            .then((data)=>{
+                M.toast({
+                    html: data.msj
+                });
+                this.get_personas();
+            })
+            .catch(err => console.error(err));
     }
 
     /*
@@ -69,12 +120,12 @@ class App extends Component{
                                     <form onSubmit={this.add_persona}>
                                         <div className='row'>
                                             <div className='input-field col s12'>
-                                                <input name='name' type="text" placeholder='Nombre' onChange={this.inp_cambio}/>
+                                                <input name='name' type="text" placeholder='Nombre' value={this.state.name} onChange={this.inp_cambio}/>
                                             </div>
                                         </div>
                                         <div className='row'>
                                             <div className='input-field col s12'>
-                                                <input name='apellido' type="text" placeholder='Apellido' onChange={this.inp_cambio}/>
+                                                <input name='apellido' type="text" placeholder='Apellido' value={this.state.apellido} onChange={this.inp_cambio}/>
                                             </div>
                                         </div>
                                         <button type='submit' className='btn light-blue darken-4'>Enviar</button>
@@ -83,7 +134,37 @@ class App extends Component{
                             </div>
                         </div>
                         <div className='col s7'>
+                            <table>
+                                <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Last Name</th>
+                                    <th>Acction</th>
+                                </tr>
+                                </thead>
 
+                                <tbody>
+                                {
+                                    this.state.personas.map(persona =>{
+
+                                    return(
+                                        <tr key={persona._id}>
+                                            <td>{persona.name}</td>
+                                            <td>{persona.apellido}</td>
+                                            <td>
+                                                <button className='btn light-blue darken-4' style={{margin:'4px'}} onClick={()=>{this.update_persona(persona._id)}}>
+                                                    <i className='material-icons'>edit</i>
+                                                </button>
+                                                <button className='btn red darken-4' onClick={()=> { this.delete_persona(persona._id) }}>
+                                                    <i className='material-icons'>delete</i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    );
+                                })
+                                }
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
