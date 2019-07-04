@@ -7,7 +7,9 @@ class App extends Component{
     //constructor de la applicacion donde se declara la variable state para almacenar valores en la base de datos
     constructor(){
         super();
+        /*var state que guardara nuestros valores de toda la app*/
         this.state = {
+            _id: '',
             name : '',
             apellido : '',
             personas: [],
@@ -18,13 +20,21 @@ class App extends Component{
         this.inp_cambio = this.inp_cambio.bind(this);
     }
 
+    /*esta funcion se ejecuta en cuanto la pagina este montada y ejecuta lo que tenga dentro aqui cargamos el grid*/
+    componentDidMount() {
+        this.get_personas();
+    }
+
     /*
-    *este metodo se dirije a nuestra api declarada en el archivo ./routes/crud_routes, al metodo post
+    *este metodo se dirije a nuestra api declarada en el archivo ./routes/crud_routes, al metodo post o put dependiendo si el estado tiene declarado el id
     */
     add_persona(e){
 
-        fetch('/api/all_data',{
-            method: 'POST',
+        let met = (this.state._id != '')? 'PUT' : 'POST';
+        let id = (this.state._id != '')? this.state._id : '';
+
+        fetch('/api/all_data/' + id,{
+            method: met,
             body: JSON.stringify(this.state),
             headers: {
                 'Accept': 'application/json',
@@ -36,7 +46,7 @@ class App extends Component{
                 M.toast({
                     html: data.msj
                 });
-                this.setState({name: '', apellido:''});
+                this.setState({_id: '', name: '', apellido:''});
                 this.get_personas();
             })
             .catch(err => console.error(err));
@@ -53,10 +63,7 @@ class App extends Component{
             [name]: value
         });
     }
-componentDidMount() {
-        this.get_personas();
-}
-
+/*en esta funcion se optienen todos los datos de la db y se asignan a state.personas*/
     get_personas(){
         fetch('/api/all_data')
             .then(resp => resp.json())
@@ -65,25 +72,16 @@ componentDidMount() {
             });
     }
 
+    /*esta funcion llena la variable state con los datos por id*/
     update_persona(id_persona){
-        fetch('/api/all_data' + id_persona,{
-            method: 'PUT',
-            body: JSON.stringify(this.state),
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            }
-        })
+        fetch('/api/all_data/' + id_persona)
             .then(resp => resp.json())
-            .then((data)=>{
-                M.toast({
-                    html: data.msj
-                });
-                this.setState({name: '', apellido:''});
-                this.get_personas();
-            })
+            .then(data => {
+                this.setState({_id: data.response._id, name: data.response.name, apellido: data.response.apellido});
+            });
     }
 
+    /*esta funcion elimina una persona por id*/
     delete_persona(id_persona){
         fetch('/api/all_data/' + id_persona,{
             method: 'DELETE',
