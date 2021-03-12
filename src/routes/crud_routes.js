@@ -28,7 +28,7 @@ router.get('/:id',async (req, resp)=>{
     });
 });
 
-/*metodo get que dice q ira al servidor en ejecucion y obtendra los datos por metodo post, y hara un insert a nuestra BD en Mongo*/
+/*metodo post hara un insert a nuestra BD en Mongo*/
 router.post('/', async (req, resp) => {
     const { name, apellido } = req.body;
 

@@ -107,7 +107,7 @@ class App extends Component{
             <div>
                 <nav className='light-blue darken-4'>
                     <div className='container'>
-                        <a className='brand-logo' href="/">M E R N</a>
+                        <a className='brand-logo' href="/">Ejemplo</a>
                     </div>
                 </nav>
                 <div className='container'>
@@ -135,9 +135,9 @@ class App extends Component{
                             <table>
                                 <thead>
                                 <tr>
-                                    <th>Name</th>
-                                    <th>Last Name</th>
-                                    <th>Acction</th>
+                                    <th>Nombre</th>
+                                    <th>Apellido</th>
+                                    <th>Accion</th>
                                 </tr>
                                 </thead>
 
